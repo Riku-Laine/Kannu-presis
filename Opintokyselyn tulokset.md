@@ -11,7 +11,13 @@ Contents
 - The data in brief
 - Results by theme
   * Communication
-  * 
+  * Choosing the study path
+  * Planning and the proceeding of studies
+  * courses and Teaching
+  * General opinion regarding the study reform
+  * *vastaavuustaulukot*
+  * Study counselling
+  * Student representatives
 - Summary, recommendations
 
 
