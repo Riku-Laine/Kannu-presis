@@ -1,0 +1,125 @@
+Opintokyselyn tulokset
+========================================================
+author: Riku Laine
+date: 18.12.2017
+autosize: true
+
+Contents
+========================================================
+
+- The data in brief
+- Results by theme
+  * Communication
+  * 
+- Summary, recommendations
+
+```{r, echo =F}
+qnaire <- read.csv2("~/Moodi/opintokysely.csv")
+
+qnaire <- droplevels(qnaire[, apply(qnaire, 2, function(x) !all(is.na(x)))])
+
+colnames(qnaire)[1:3] <- c("Time", "Language", "NewOld")
+
+levels(qnaire$NewOld) <- c("English.current", "Finnish.current", "Finnish.old")
+
+uudet <- qnaire[qnaire$NewOld=="Finnish.current", ]
+
+vanhat <- qnaire[qnaire$NewOld=="Finnish.old", ]
+
+enkku <- tail(qnaire, 3)
+
+tilasto <- qnaire[qnaire$Pääaineesi=="Tilastotiede", ]
+
+uudet <- droplevels(uudet[, apply(uudet, 2, function(x) !all(is.na(x)))])
+vanhat <- droplevels(vanhat[, apply(vanhat, 2, function(x) !all(is.na(x)))])
+enkku <- droplevels(enkku[, apply(enkku, 2, function(x) !all(is.na(x)))])
+tilasto <- droplevels(tilasto[, apply(tilasto, 2, function(x) !all(is.na(x)))])
+```
+
+The data in brief (1/2)
+========================================================
+
+- The data is the result of student questionnaire held between XX.XX. and YY.YY. 
+- A total of 313 respondents of which
+  * 117 study by the current curriculum
+  * 193 study by the old curriculum
+- Also three students studying by the current curricula answered in English.
+
+***
+
+```{r, echo=F}
+qnaire$Start <- qnaire$Opintojesi.aloitusvuosi.valtsikassa
+qnaire$Start[qnaire$Start==""] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[qnaire$Start==""]
+qnaire$Start[qnaire$Start==""] <- qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences[qnaire$Start==""]
+qnaire$Start <- droplevels(qnaire$Start)
+levels(qnaire$Start)[1] <- "2011 or before"
+library(ggplot2)
+ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents")+
+	geom_text(aes(label = ..count..), stat= "count", vjust = -.5)+scale_y_continuous(limits = c(0,100))
+```
+
+
+The data in brief (2/2)
+========================================================
+left: 45%
+
+- The questionnaire consisted of 34 or 37 questions dependending the respondents' curricula.
+- Most of the questions were answered in the 5-point [Likert scale](https://en.wikipedia.org/wiki/Likert_scale).
+  * Open-ended questions were removed from the given data for privacy reasons.
+
+  
+***
+
+```{r, echo=F, out.width="50%"}
+qnaire$Program <- as.character.factor(qnaire$Koulutusohjelmasi)
+qnaire$Program[qnaire$Program==""] <- as.character.factor(qnaire$Your.degree.programme.[qnaire$Program==""])
+qnaire$Program[qnaire$Program==""] <- as.character.factor(qnaire$Pääaineesi[qnaire$Program==""])
+taulu2 <- data.frame(table(qnaire$Program))
+colnames(taulu2) <- c("Subject", "Frequency")
+levels(taulu2$Subject)[8] <- "Polvi (kandi)"
+kable(taulu2[order(taulu2$Frequency, decreasing = T)[1:10],], row.names=F)
+```
+
+Communication (löysin tietoa,nimi selkeä)
+===========
+left: 40%
+
+- Clarity of name of the new programs has been quite good, mean of answers $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
+
+
+
+***
+
+```{r, echo =F}
+par(mfrow=c(2,1))
+barplot(table(factor(qnaire$Koulutusohjelmani.nimi.on.selkeä, levels=1:5)), horiz =T, main = "Clarity of name", las=1, ylab = "Likert", xlab = "Count")
+barplot(table(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista), horiz=T, main = "Found info easily", las=1, ylab = "Likert", xlab = "Count")
+par(mfrow=c(1,1))
+```
+
+Choosing the study path
+=========================
+
+
+Planning and the proceeding of studies
+===============================================
+
+
+Courses (läsnäolopakko/muut suor.t:t)
+======================================
+
+
+Teaching (laatu/sisältö/tarjonta)
+===================================
+
+General opinion regarding the study reform
+============================================
+
+vastaavuustaulukot
+===========================
+
+Study counselling
+====================
+
+Student representatives
+=============================
