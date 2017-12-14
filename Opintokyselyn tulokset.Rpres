@@ -15,7 +15,7 @@ Contents
 - Summary, recommendations
 
 ```{r, echo =F}
-qnaire <- read.csv2("~/Moodi/opintokysely.csv")
+qnaire <- read.csv2("~/GitHub/Kannu-presis/opintokysely.csv")
 
 qnaire <- droplevels(qnaire[, apply(qnaire, 2, function(x) !all(is.na(x)))])
 
