@@ -1,12 +1,15 @@
-Results of study questionnaire
-========================================================
-author: Riku Laine
-date: 18.12.2017
-autosize: true
+---
+title: "Untitled"
+author: "Riku Laine"
+date: "15 joulukuuta 2017"
+output: ioslides_presentation
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## Contents
 
-Contents
-========================================================
 
 - The data in brief
 - Results by theme
@@ -15,7 +18,7 @@ Contents
 - Summary, recommendations
 
 ```{r, echo =F}
-qnaire <- read.csv2("~/Moodi/opintokysely.csv")
+qnaire <- read.csv2("~/GitHub/Kannu-presis/opintokysely.csv")
 
 qnaire <- droplevels(qnaire[, apply(qnaire, 2, function(x) !all(is.na(x)))])
 
@@ -37,8 +40,8 @@ enkku <- droplevels(enkku[, apply(enkku, 2, function(x) !all(is.na(x)))])
 tilasto <- droplevels(tilasto[, apply(tilasto, 2, function(x) !all(is.na(x)))])
 ```
 
-The data in brief (1/2)
-========================================================
+## The data in brief (1/2)
+
 
 - The data is the result of student questionnaire held between XX.XX. and YY.YY. 
 - A total of 313 respondents of which
@@ -55,6 +58,7 @@ qnaire$Start[qnaire$Start==""] <- qnaire$The.year.you.began.your.studies.in.the.
 qnaire$Start <- droplevels(qnaire$Start)
 levels(qnaire$Start)[1] <- "2011 or before"
 library(ggplot2)
+library(knitr)
 ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents")+
 	geom_text(aes(label = ..count..), stat= "count", vjust = -.5)+scale_y_continuous(limits = c(0,100))
 ```
