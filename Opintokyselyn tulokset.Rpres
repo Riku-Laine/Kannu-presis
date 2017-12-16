@@ -8,6 +8,49 @@ autosize: true
 
 ![](kannulogo.png)
 
+```{r Settings, include=FALSE}
+library(knitr)
+library(ggplot2)
+opts_chunk$set(message = F)
+opts_chunk$set(warning = F)
+opts_chunk$set(echo = F)
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                    ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+ if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+```
 
 Contents
 ========================================================
@@ -17,12 +60,13 @@ Contents
   * Communication
   * Choosing the study path
   * Planning and the proceeding of studies
-  * courses and Teaching
+  * courses and teaching
   * General opinion regarding the study reform
   * *vastaavuustaulukot*
   * Study counselling
   * Student representatives
-- Summary, recommendations
+- Summary
+- recommendations
 
 ```{r, echo =F}
 qnaire <- read.csv2("~/GitHub/Kannu-presis/opintokysely.csv")
@@ -64,8 +108,7 @@ qnaire$Start[qnaire$Start==""] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[qnai
 qnaire$Start[qnaire$Start==""] <- qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences[qnaire$Start==""]
 qnaire$Start <- droplevels(qnaire$Start)
 levels(qnaire$Start)[1] <- "2011 or before"
-library(ggplot2)
-ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents")+
+ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents, n = 313")+
 	geom_text(aes(label = ..count..), stat= "count", vjust = -.5)+scale_y_continuous(limits = c(0,100))
 ```
 
@@ -80,7 +123,7 @@ left: 45%
 
   
 ***
-
+<font size="6">
 ```{r, echo=F, out.width="50%"}
 qnaire$Program <- as.character.factor(qnaire$Koulutusohjelmasi)
 qnaire$Program[qnaire$Program==""] <- as.character.factor(qnaire$Your.degree.programme.[qnaire$Program==""])
@@ -90,35 +133,74 @@ colnames(taulu2) <- c("Subject", "Frequency")
 levels(taulu2$Subject)[8] <- "Polvi (kandi)"
 kable(taulu2[order(taulu2$Frequency, decreasing = T)[1:10],], row.names=F)
 ```
+</font>
 
-Communication (löysin tietoa,nimi selkeä)
+
+Marketing (löysin tietoa,nimi selkeä)
 ===========
 left: 40%
 
 - Clarity of name of the new programs has been quite good, mean of answers $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
-
+- Communication hasn't been that succesful as the mean of answers was $\approx$ `r round(mean(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista, na.rm=T), digits=2)`. It is also notable that one in three respondents (33.3%) claimed they couldn't find info easily.
 
 
 ***
 
 ```{r, echo =F}
 par(mfrow=c(2,1))
-barplot(table(factor(qnaire$Koulutusohjelmani.nimi.on.selkeä, levels=1:5)), horiz =T, main = "Clarity of name", las=1, ylab = "Likert", xlab = "Count")
-barplot(table(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista), horiz=T, main = "Found info easily", las=1, ylab = "Likert", xlab = "Count")
+barplot(table(factor(qnaire$Koulutusohjelmani.nimi.on.selkeä, levels=1:5)), horiz =T, main = "Clarity of name, n = 117", las=1, ylab = "Likert", xlab = "Count")
+barplot(table(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista), horiz=T, main = "Found info easily, n = 117", las=1, ylab = "Likert", xlab = "Count")
 par(mfrow=c(1,1))
 ```
 
 Choosing the study path
 =========================
+left:40%
+
+- Students are somewhat divided if they are satisfied with choosing their path later *(Mann-Whitney U; p* $\approx$ *0.15)*.
+- Almost one in four (28%) who must choose a path know when to do it
+- The students have also a pretty bad knowledge on what basis are they being chosen as only 36% know.
+
+***
+
+```{r}
+
+qnaire[qnaire==""] <- NA
+qnaire <- droplevels(qnaire)
+
+levels(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään) <- c("No", "Yes", "Doesn't concern me")
+levels(qnaire$Tiedän.millä.perustein.opiskelijat.valitaan.eri.opintosuuntiin) <- c("No", "Yes", "Doesn't concern me")
+
+p1 <- ggplot(data=qnaire,aes(x=Olen.tyytyväinen..että.valitsen.opintosuunnan.vasta.myöhemmässä.vaiheessa.opintoja)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,45)+ggtitle("Satisfied for choosing later, n = 117")
+
+p2 <- ggplot(data=qnaire[!is.na(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään),],aes(x=Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ylab("")+ggtitle("Know when they choose, n = 117")
+
+p3 <- ggplot(data=qnaire[!is.na(qnaire$Tiedän.millä.perustein.opiskelijat.valitaan.eri.opintosuuntiin),],aes(x=Tiedän.millä.perustein.opiskelijat.valitaan.eri.opintosuuntiin)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ggtitle("Know on what basis are students being chosen, n = 117")
+
+multiplot(p1, p2, p3, cols=1)
+```
 
 
 Planning and the proceeding of studies
 ===============================================
 
+- 1/4 no process without confusion
+- planning could be easeier -> difference between years!!!!
+
+***
+
+```{r}
+p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylab("")+ylim(0,60)+ggtitle(paste("Studies have progressed, n = 117, mean = ", round(mean(qnaire$Opintoni.ovat.edenneet.häiriöttä, na.rm=T), digits=2)))
+
+p2 <- ggplot(data=qnaire[!is.na(qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa),],aes(x=Omien.opintojeni.suunnittelu.on.ollut.sujuvaa)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,60)+ggtitle(paste("Fluent planning, n = 117, mean = ", round(mean(qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa, na.rm=T), digits = 2)))
+
+multiplot(p1, p2, cols=1)
+
+```
+
 
 Courses (läsnäolopakko/muut suor.t:t)
 ======================================
-
 
 Teaching (laatu/sisältö/tarjonta)
 ===================================

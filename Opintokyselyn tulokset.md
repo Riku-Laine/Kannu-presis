@@ -9,6 +9,7 @@ autosize: true
 ![](kannulogo.png)
 
 
+
 Contents
 ========================================================
 
@@ -17,12 +18,13 @@ Contents
   * Communication
   * Choosing the study path
   * Planning and the proceeding of studies
-  * courses and Teaching
+  * courses and teaching
   * General opinion regarding the study reform
   * *vastaavuustaulukot*
   * Study counselling
   * Student representatives
-- Summary, recommendations
+- Summary
+- recommendations
 
 
 
@@ -50,7 +52,7 @@ left: 45%
 
   
 ***
-
+<font size="6">
 
 |Subject                            | Frequency|
 |:----------------------------------|---------:|
@@ -64,13 +66,15 @@ left: 45%
 |Sosiaalipsykologia                 |        17|
 |Sosiaali- ja kulttuuriantropologia |        14|
 |Sosiaalitieteiden maisteriohjelma  |        14|
+</font>
 
-Communication (löysin tietoa,nimi selkeä)
+
+Marketing (löysin tietoa,nimi selkeä)
 ===========
 left: 40%
 
 - Clarity of name of the new programs has been quite good, mean of answers $\approx$ 4.25.
-
+- Communication hasn't been that succesful as the mean of answers was $\approx$ 3.15. It is also notable that one in three respondents (33.3%) claimed they couldn't find info easily.
 
 
 ***
@@ -79,15 +83,30 @@ left: 40%
 
 Choosing the study path
 =========================
+left:40%
+
+- Students are somewhat divided if they are satisfied with choosing their path later *(Mann-Whitney U; p* $\approx$ *0.15)*.
+- Almost one in four (28%) who must choose a path know when to do it
+- The students have also a pretty bad knowledge on what basis are they being chosen as only 36% know.
+
+***
+
+![plot of chunk unnamed-chunk-5](Opintokyselyn tulokset-figure/unnamed-chunk-5-1.png)
 
 
 Planning and the proceeding of studies
 ===============================================
 
+- 1/4 no process without confusion
+- planning could be easeier -> difference between years!!!!
+
+***
+
+![plot of chunk unnamed-chunk-6](Opintokyselyn tulokset-figure/unnamed-chunk-6-1.png)
+
 
 Courses (läsnäolopakko/muut suor.t:t)
 ======================================
-
 
 Teaching (laatu/sisältö/tarjonta)
 ===================================
