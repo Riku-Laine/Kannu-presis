@@ -213,59 +213,137 @@ multiplot(p1, p2, cols=1)
 ```
 
 
-Courses (läsnäolopakko/muut suor.t:t)
+Courses
 ======================================
 
-- lorem lorem
-- ipsum ipsum
-- dolor dolor
+- Almost half think the reform has affected the amount of mandatory presence and supply of alternative ways to take exams. (NB the amount of DK's)
+- Students have pretty much liked methods and contents
+- 60% weren't satisfied with the renewed syllabus (compared to the previous years)
+
 
 ***
 
-```{r}
-qnaire$Olen.tyytyväinen.kurssien.asiasisältöön.ja.opetustapoihin #uudet
+<font size="6">
+```{r,}
+qnaire$Presence <- qnaire$Onko.läsnäolopakon.määrä.muuttunut.opinnoissasi.syksyllä.
+#qnaire$Onko.läsnäolopakon.määrä.muuttunut.opinnoissasi.syksyllä. <- NULL
+qnaire$AltExamining <- qnaire$Onko.koulutusuudistus.vaikuttanut.vaihtoehtoisten.suoritustapojen..esseesuorituksen..kirjatentit..tarjontaan.
+#qnaire$Onko.koulutusuudistus.vaikuttanut.vaihtoehtoisten.suoritustapojen..esseesuorituksen..kirjatentit..tarjontaan. <- NULL
 
-qnaire$Olen.tyytyväinen.uudistuneeseen.opintotarjontaan #vanhat
+qnaire$Presence <- factor(qnaire$Presence, levels(qnaire$Presence)[c(3,1,2)])
+qnaire$AltExamining <- factor(qnaire$AltExamining, levels(qnaire$AltExamining)[c(3,1,2)])
 
-qnaire$Onko.läsnäolopakon.määrä.muuttunut.opinnoissasi.syksyllä. #vahant
+taulu2 <- data.frame(`Answers in percentages` = c("Mandatory presence", "Alternative examining"))
 
-qnaire$Onko.koulutusuudistus.vaikuttanut.vaihtoehtoisten.suoritustapojen..esseesuorituksen..kirjatentit..tarjontaan.
+taulu2 <- cbind(taulu2, rbind(prop.table(table(qnaire$Presence)), prop.table(table(qnaire$AltExamining))))
+
+colnames(taulu2)[2:4] <- c("Yes", "No", "DK")
+
+taulu2[,2:4] <- round(taulu2[,2:4], digits=3)*100
+
+kable(taulu2)
+```
+</font>
+
+```{r, fig.asp=1}
+pl1 <- ggplot(qnaire, aes(x=Olen.tyytyväinen.kurssien.asiasisältöön.ja.opetustapoihin))+geom_bar(na.rm = T)+
+	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,60)+ylab("")+
+	ggtitle(paste("Satisfied with course contents and teaching methods, n = 117, mean = ", round(mean(qnaire$Olen.tyytyväinen.kurssien.asiasisältöön.ja.opetustapoihin, na.rm=T), digits = 2))) #uudet
+
+pl2 <- ggplot(qnaire, aes(x=Olen.tyytyväinen.uudistuneeseen.opintotarjontaan))+geom_bar(na.rm = T)+
+	geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,100)+
+	ggtitle(paste("Satisfied with renewed syllabus, n = 193, mean = ", round(mean(qnaire$Olen.tyytyväinen.uudistuneeseen.opintotarjontaan, na.rm=T), digits = 2)))
+
+multiplot(pl1, pl2, cols=1)
 ```
 
 
-Teaching (laatu/sisältö/tarjonta)
+Teaching
 ===================================
 
-- premissinen kyssäri
-
+- New students are quite satisfied with the quality of teaching, more than half agreed or strongly agreed. 
+- I wouldn't say that the students have experinced the reform too badly
+  * Distribution of answers quite symmetrical
+  * Relatively low number of extreme answers
 
 ***
 
 ```{r}
-kable(qnaire$Olen.tyytyväinen.opetuksen.laatuun) #uudet
+pl1 <- ggplot(qnaire, aes(x=Olen.tyytyväinen.opetuksen.laatuun))+geom_bar(na.rm = T)+
+	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,60)+ylab("")+
+	ggtitle(paste("Satisfied with quality of teaching, n = 117, mean = ", round(mean(qnaire$Olen.tyytyväinen.opetuksen.laatuun, na.rm=T), digits = 2)),subtitle = "New students") #uudet
 
-kable(qnaire$Opetuksen.laatu.on.heikentynyt.syksyllä) #vanhat
+pl2 <- ggplot(qnaire, aes(x=Opetuksen.laatu.on.heikentynyt.syksyllä))+geom_bar(na.rm = T)+
+	geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,80)+
+	ggtitle(paste("Quality of teaching has decreased during fall, n = 193, mean = ", round(mean(qnaire$Opetuksen.laatu.on.heikentynyt.syksyllä, na.rm=T), digits = 2)), subtitle = "Old students")
 
+multiplot(pl1, pl2, cols=1)
 
 ```
 
 
-General opinion regarding the study reform
+General opinions
 ============================================
 
 ```{r}
-kable(table(qnaire$))
+p1 <- ggplot(data=qnaire,aes(x=Pidän.koulutusuudistusta.lähtökohtaisesti.hyvänä.asiana)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ggtitle("I regard the reform as a good thing, n = 193")
+
+p2 <- ggplot(data=qnaire,aes(x=Oletko.harkinnut.siirtymistä.uuteen.koulutusohjelmaan.)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,100)+ylab("")+ggtitle("Have you thought about changing to a new program, n = 193")
+
+p3 <- ggplot(data=qnaire,aes(x=Olisin.mielummin.hakenut.uusiin.koulutusohjelmiin.kuin.valinnut.pääaineeni.jo.hakuvaiheessa)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,130)+ggtitle("I had rather applied to the new programs, n = 193")
+
+multiplot(p1, p2, p3, cols=1)
+
 ```
 
+***
 
-Correspondence tables
+- The reform is regarded as a good thing
+- Some students have thought about changing to a new program, but majority want to stick with the old
+- No regret noticeable, almost no one had rather applied to a new program
+
+Correspondence tables (CT)
 ===========================
 
+- Clarity of especially minor subjects' correspondence tables should be improved.
+- Students seem to have hard time finding their minors' correspondence tables.
 
+***
 
+```{r}
+taulu3 <- table(qnaire$Näen.selkeästi.pääaineeni.vastaavuustaulukoista.mikä.uusi.kurssi.korvaa.mitäkin.vanhaa.kurssia)
+taulu3 <- rbind(taulu3, table(qnaire$Näen.selkeästi.sivuaineeni.vastaavuustaulukoista.mikä.uusi.kurssi.korvaa.mitäkin.vanhaa.kurssia))
+taulu3 <- rbind(taulu3, table(qnaire$Tiedän.mistä.löydän.pääaineeni.vastaavuustaulukot))
+taulu3 <- rbind(taulu3, table(qnaire$Tiedän.mistä.löydän.sivuaineeni.vastaavuustaulukot))
+
+rownames(taulu3) <- c("Major's CTs are clear", "Minor's CTs are clear", "Know where are major's CTs", "Know where are minor's CTs")
+taulu3 <- round(prop.table(taulu3, 1)*100, digits=1)
+
+kable(taulu3, col.names = c("No", "Yes"))
+```
 
 Study counselling
 ====================
 
+
+***
+
+```{r}
+
+```
+
+
 Student representatives
 =============================
+
+```{r}
+taulu4 <- table(qnaire$Tiedän.ketkä.ovat.opiskelijajärjestöni.opintovastaavat)
+taulu4 <- rbind(taulu4, table(qnaire$Tiedän..ketkä.ovat.ainejärjestöni.opiskelijajärjestöni.opintovastaavat))
+
+kable(taulu4, col.names = c("No", "Yes"))
+```
+
