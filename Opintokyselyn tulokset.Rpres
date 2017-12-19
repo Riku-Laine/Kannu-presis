@@ -129,7 +129,7 @@ kable(taulu2[order(taulu2$Frequency, decreasing = T)[1:10],], row.names=F)
 </font>
 
 
-Marketing (löysin tietoa,nimi selkeä)
+Marketing
 ===========
 left: 40%
 
@@ -214,8 +214,39 @@ multiplot(p1, p2, cols=1)
 Courses (läsnäolopakko/muut suor.t:t)
 ======================================
 
+- lorem lorem
+- ipsum ipsum
+- dolor dolor
+
+***
+
+```{r}
+qnaire$Olen.tyytyväinen.kurssien.asiasisältöön.ja.opetustapoihin #uudet
+
+qnaire$Olen.tyytyväinen.uudistuneeseen.opintotarjontaan #vanhat
+
+qnaire$Onko.läsnäolopakon.määrä.muuttunut.opinnoissasi.syksyllä. #vahant
+
+qnaire$Onko.koulutusuudistus.vaikuttanut.vaihtoehtoisten.suoritustapojen..esseesuorituksen..kirjatentit..tarjontaan.
+```
+
+
 Teaching (laatu/sisältö/tarjonta)
 ===================================
+
+- premissinen kyssäri
+
+
+***
+
+```{r}
+kable(qnaire$Olen.tyytyväinen.opetuksen.laatuun) #uudet
+
+kable(qnaire$Opetuksen.laatu.on.heikentynyt.syksyllä) #vanhat
+
+
+```
+
 
 General opinion regarding the study reform
 ============================================
