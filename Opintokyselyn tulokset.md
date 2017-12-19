@@ -54,7 +54,7 @@ left: 45%
 ***
 <font size="6">
 
-|Subject                            | Frequency|
+|Program/Subject                    | Frequency|
 |:----------------------------------|---------:|
 |Sosiaalitieteiden kandiohjelma     |        41|
 |Yleinen valtio-oppi                |        29|
@@ -73,8 +73,8 @@ Marketing (löysin tietoa,nimi selkeä)
 ===========
 left: 40%
 
-- Clarity of name of the new programs has been quite good, mean of answers $\approx$ 4.25.
-- Communication hasn't been that succesful as the mean of answers was $\approx$ 3.15. It is also notable that one in three respondents (33.3%) claimed they couldn't find info easily.
+- Clarity of name of the new programs has been quite good, mean of answers was $\approx$ 4.25.
+- Communication hasn't been that succesful as one in three respondents (33.3%) claimed they couldn't find info easily.
 
 
 ***
@@ -97,8 +97,8 @@ left:40%
 Planning and the proceeding of studies
 ===============================================
 
-- 1/4 no process without confusion
-- planning could be easeier -> difference between years!!!!
+- Almost two in five (39%) disagreed or strongly disagreed to the claim their studies had proceeded fluently.
+- Nearly half of the students have experienced that planning their studies has not been smooth.
 
 ***
 

@@ -77,18 +77,11 @@ colnames(qnaire)[1:3] <- c("Time", "Language", "NewOld")
 
 levels(qnaire$NewOld) <- c("English.current", "Finnish.current", "Finnish.old")
 
-uudet <- qnaire[qnaire$NewOld=="Finnish.current", ]
-
-vanhat <- qnaire[qnaire$NewOld=="Finnish.old", ]
-
-enkku <- tail(qnaire, 3)
+uudet <- qnaire$NewOld=="Finnish.current"
+vanhat <- qnaire$NewOld=="Finnish.old"
+enkku <- qnaire$NewOld=="English.current"
 
 tilasto <- qnaire[qnaire$Pääaineesi=="Tilastotiede", ]
-
-uudet <- droplevels(uudet[, apply(uudet, 2, function(x) !all(is.na(x)))])
-vanhat <- droplevels(vanhat[, apply(vanhat, 2, function(x) !all(is.na(x)))])
-enkku <- droplevels(enkku[, apply(enkku, 2, function(x) !all(is.na(x)))])
-tilasto <- droplevels(tilasto[, apply(tilasto, 2, function(x) !all(is.na(x)))])
 ```
 
 The data in brief (1/2)
@@ -104,8 +97,8 @@ The data in brief (1/2)
 
 ```{r, echo=F}
 qnaire$Start <- qnaire$Opintojesi.aloitusvuosi.valtsikassa
-qnaire$Start[qnaire$Start==""] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[qnaire$Start==""]
-qnaire$Start[qnaire$Start==""] <- qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences[qnaire$Start==""]
+qnaire$Start[vanhat] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[vanhat]
+qnaire$Start[enkku] <- qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences[enkku]
 qnaire$Start <- droplevels(qnaire$Start)
 levels(qnaire$Start)[1] <- "2011 or before"
 ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents, n = 313")+
@@ -126,11 +119,11 @@ left: 45%
 <font size="6">
 ```{r, echo=F, out.width="50%"}
 qnaire$Program <- as.character.factor(qnaire$Koulutusohjelmasi)
-qnaire$Program[qnaire$Program==""] <- as.character.factor(qnaire$Your.degree.programme.[qnaire$Program==""])
-qnaire$Program[qnaire$Program==""] <- as.character.factor(qnaire$Pääaineesi[qnaire$Program==""])
+qnaire$Program[enkku] <- as.character.factor(qnaire$Your.degree.programme.[enkku])
+qnaire$Program[vanhat] <- as.character.factor(qnaire$Pääaineesi[vanhat])
 taulu2 <- data.frame(table(qnaire$Program))
-colnames(taulu2) <- c("Subject", "Frequency")
-levels(taulu2$Subject)[8] <- "Polvi (kandi)"
+colnames(taulu2) <- c("Program/Subject", "Frequency")
+levels(taulu2$`Program/Subject`)[8] <- "Polvi (kandi)"
 kable(taulu2[order(taulu2$Frequency, decreasing = T)[1:10],], row.names=F)
 ```
 </font>
@@ -140,17 +133,24 @@ Marketing (löysin tietoa,nimi selkeä)
 ===========
 left: 40%
 
-- Clarity of name of the new programs has been quite good, mean of answers $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
-- Communication hasn't been that succesful as the mean of answers was $\approx$ `r round(mean(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista, na.rm=T), digits=2)`. It is also notable that one in three respondents (33.3%) claimed they couldn't find info easily.
+- Clarity of name of the new programs has been quite good, mean of answers was $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
+- Communication hasn't been that succesful as one in three respondents (33.3%) claimed they couldn't find info easily.
 
 
 ***
 
 ```{r, echo =F}
-par(mfrow=c(2,1))
-barplot(table(factor(qnaire$Koulutusohjelmani.nimi.on.selkeä, levels=1:5)), horiz =T, main = "Clarity of name, n = 117", las=1, ylab = "Likert", xlab = "Count")
-barplot(table(qnaire$Löysin.helposti.tietoa.uusista.koulutusohjelmista), horiz=T, main = "Found info easily, n = 117", las=1, ylab = "Likert", xlab = "Count")
-par(mfrow=c(1,1))
+plot1 <- ggplot(data=qnaire,aes(x=Koulutusohjelmani.nimi.on.selkeä)) + geom_bar(na.rm = T) +
+	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlim(0.5,5.6)+xlab("")+ylim(0,70)+ylab("")+
+	ggtitle("Clarity of name, n = 117")
+
+plot2 <- ggplot(data=qnaire,aes(x=Löysin.helposti.tietoa.uusista.koulutusohjelmista)) + geom_bar(na.rm = T) +
+	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,50)+
+	ggtitle("Found info easily about the new programmes (Finnish), n = 117")
+
+multiplot(plot1, plot2, cols = 1)
 ```
 
 Choosing the study path
@@ -171,7 +171,7 @@ qnaire <- droplevels(qnaire)
 levels(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään) <- c("No", "Yes", "Doesn't concern me")
 levels(qnaire$Tiedän.millä.perustein.opiskelijat.valitaan.eri.opintosuuntiin) <- c("No", "Yes", "Doesn't concern me")
 
-p1 <- ggplot(data=qnaire,aes(x=Olen.tyytyväinen..että.valitsen.opintosuunnan.vasta.myöhemmässä.vaiheessa.opintoja)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,45)+ggtitle("Satisfied for choosing later, n = 117")
+p1 <- ggplot(data=qnaire,aes(x=Olen.tyytyväinen..että.valitsen.opintosuunnan.vasta.myöhemmässä.vaiheessa.opintoja)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,45)+ggtitle("Satisfied for choosing path later, n = 117")
 
 p2 <- ggplot(data=qnaire[!is.na(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään),],aes(x=Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ylab("")+ggtitle("Know when they choose, n = 117")
 
@@ -184,15 +184,27 @@ multiplot(p1, p2, p3, cols=1)
 Planning and the proceeding of studies
 ===============================================
 
-- 1/4 no process without confusion
-- planning could be easeier -> difference between years!!!!
+- Almost two in five (39%) disagreed or strongly disagreed to the claim their studies had proceeded fluently.
+- Nearly half of the students have experienced that planning their studies has not been smooth.
 
 ***
 
 ```{r}
-p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylab("")+ylim(0,60)+ggtitle(paste("Studies have progressed, n = 117, mean = ", round(mean(qnaire$Opintoni.ovat.edenneet.häiriöttä, na.rm=T), digits=2)))
+qnaire$Opintoni.ovat.edenneet.häiriöttä[vanhat] <- qnaire$Opintoni.ovat.edenneet.häiriöttä.1[vanhat]
+qnaire$Opintoni.ovat.edenneet.häiriöttä[enkku] <- qnaire$My.studies.have.proceeded.without.any.disturbance[enkku]
 
-p2 <- ggplot(data=qnaire[!is.na(qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa),],aes(x=Omien.opintojeni.suunnittelu.on.ollut.sujuvaa)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,60)+ggtitle(paste("Fluent planning, n = 117, mean = ", round(mean(qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa, na.rm=T), digits = 2)))
+p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(na.rm = T) + 
+	geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylab("")+ylim(0,110)+
+	ggtitle(paste("Studies have proceeded without disturbance, n = 313, mean = ", round(mean(qnaire$Opintoni.ovat.edenneet.häiriöttä, na.rm=T), digits=2)))
+
+qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[vanhat] <- qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa.1[vanhat]
+qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[enkku] <- qnaire$Planning.my.studies.has.been.smooth[enkku]
+
+p2 <- ggplot(data=qnaire, aes(x=Omien.opintojeni.suunnittelu.on.ollut.sujuvaa)) + geom_bar(na.rm = T) +
+	geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+
+	coord_flip()+xlab("")+ylim(0,110)+
+	ggtitle(paste("Fluent planning, n = 313, mean = ", round(mean(qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa, na.rm=T), digits = 2)))
 
 multiplot(p1, p2, cols=1)
 
