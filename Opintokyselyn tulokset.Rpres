@@ -57,16 +57,8 @@ Contents
 
 - The data in brief
 - Results by theme
-  * Communication
-  * Choosing the study path
-  * Planning and the proceeding of studies
-  * courses and teaching
-  * General opinion regarding the study reform
-  * *vastaavuustaulukot*
-  * Study counselling
-  * Student representatives
-- Summary
-- recommendations
+- Summaries
+- Discuss/recommendations
 
 ```{r, echo =F}
 qnaire <- read.csv2("~/GitHub/Kannu-presis/opintokysely.csv")
@@ -81,7 +73,7 @@ uudet <- qnaire$NewOld=="Finnish.current"
 vanhat <- qnaire$NewOld=="Finnish.old"
 enkku <- qnaire$NewOld=="English.current"
 
-tilasto <- qnaire[qnaire$Pääaineesi=="Tilastotiede", ]
+qnaire$X.1 <- NULL
 ```
 
 The data in brief (1/2)
@@ -96,9 +88,12 @@ The data in brief (1/2)
 ***
 
 ```{r, echo=F}
-qnaire$Start <- qnaire$Opintojesi.aloitusvuosi.valtsikassa
-qnaire$Start[vanhat] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[vanhat]
+qnaire$Start <- qnaire$Opintojesi.aloitusvuosi.valtsikassa; qnaire$Opintojesi.aloitusvuosi.valtsikassa <- NULL
+qnaire$Start[vanhat] <- qnaire$Opintojen.aloitusvuosi.valtsikassa[vanhat]; qnaire$Opintojen.aloitusvuosi.valtsikassa <- NULL
 qnaire$Start[enkku] <- qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences[enkku]
+
+qnaire$The.year.you.began.your.studies.in.the.faculty.of.social.sciences <- NULL
+
 qnaire$Start <- droplevels(qnaire$Start)
 levels(qnaire$Start)[1] <- "2011 or before"
 ggplot(qnaire, aes(x=factor(Start)))+geom_bar(stat="count")+xlab("Starting year")+ggtitle("Starting year of the respondents, n = 313")+
@@ -118,9 +113,9 @@ left: 45%
 ***
 <font size="6">
 ```{r, echo=F, out.width="50%"}
-qnaire$Program <- as.character.factor(qnaire$Koulutusohjelmasi)
-qnaire$Program[enkku] <- as.character.factor(qnaire$Your.degree.programme.[enkku])
-qnaire$Program[vanhat] <- as.character.factor(qnaire$Pääaineesi[vanhat])
+qnaire$Program <- as.character.factor(qnaire$Koulutusohjelmasi); qnaire$Koulutusohjelmasi <- NULL
+qnaire$Program[enkku] <- as.character.factor(qnaire$Your.degree.programme.[enkku]); qnaire$Your.degree.programme. <- NULL
+qnaire$Program[vanhat] <- as.character.factor(qnaire$Pääaineesi[vanhat]); qnaire$Pääaineesi <- NULL
 taulu2 <- data.frame(table(qnaire$Program))
 colnames(taulu2) <- c("Program/Subject", "Frequency")
 levels(taulu2$`Program/Subject`)[8] <- "Polvi (kandi)"
@@ -193,6 +188,10 @@ Planning and the proceeding of studies
 qnaire$Opintoni.ovat.edenneet.häiriöttä[vanhat] <- qnaire$Opintoni.ovat.edenneet.häiriöttä.1[vanhat]
 qnaire$Opintoni.ovat.edenneet.häiriöttä[enkku] <- qnaire$My.studies.have.proceeded.without.any.disturbance[enkku]
 
+qnaire$Opintoni.ovat.edenneet.häiriöttä.1 <- NULL
+qnaire$My.studies.have.proceeded.without.any.disturbance <-  NULL
+
+
 p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(na.rm = T) + 
 	geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+
 	coord_flip()+xlab("")+ylab("")+ylim(0,110)+
@@ -200,6 +199,9 @@ p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(
 
 qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[vanhat] <- qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa.1[vanhat]
 qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[enkku] <- qnaire$Planning.my.studies.has.been.smooth[enkku]
+
+qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa.1 <- NULL
+qnaire$Planning.my.studies.has.been.smooth <-  NULL
 
 p2 <- ggplot(data=qnaire, aes(x=Omien.opintojeni.suunnittelu.on.ollut.sujuvaa)) + geom_bar(na.rm = T) +
 	geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+
@@ -251,8 +253,16 @@ kable(qnaire$Opetuksen.laatu.on.heikentynyt.syksyllä) #vanhat
 General opinion regarding the study reform
 ============================================
 
-vastaavuustaulukot
+```{r}
+kable(table(qnaire$))
+```
+
+
+Correspondence tables
 ===========================
+
+
+
 
 Study counselling
 ====================
