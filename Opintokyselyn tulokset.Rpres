@@ -332,17 +332,40 @@ Study counselling
 
 ***
 
-```{r}
-
+```{r, results='hide'}
+qnaire$I.know.where.I.can.get.help.with.issues.regarding.my.studies
+qnaire$Tiedän.mistä.löydän.tietoa.koulutusuudistuksen.etenemisestä.ja.sen.tuomista.muutoksista
+qnaire$Olen.saanut.tarpeeksi.tietoa.miten.koulutusuudistus.vaikuttaa.omiin.opintoihin
+qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa
+qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa.1
+qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa
+qnaire$Koen..että.opintojani.koskeviin.kysymyksiin.on.pystytty.vastaamaan
+qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa.1
+qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.pääaineopintoihini
+qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.sivuaineopintoihini
 ```
 
 
 Student representatives
 =============================
 
+- Study representatives *(opintovastaavat)* are known by every three in five students.
+- Students don't know the student representatives of their programs' executive groups *(johtoryhmien opiskelijaedustajat)*.
+
+***
+
+**Do you know the student representatives of your...?**
 ```{r}
-taulu4 <- table(qnaire$Tiedän.ketkä.ovat.opiskelijajärjestöni.opintovastaavat)
-taulu4 <- rbind(taulu4, table(qnaire$Tiedän..ketkä.ovat.ainejärjestöni.opiskelijajärjestöni.opintovastaavat))
+qnaire$Jory <- qnaire$Tiedän.ketkä.ovat.koulutusohjelmani.johtoryhmän.opiskelijajäsenet
+qnaire$Jory[vanhat] <- qnaire$Tiedän.ketkä.ovat.koulutusohjelmani.johtoryhmän.opiskelijajäsenet.1[vanhat]
+
+qnaire$OpVast <- qnaire$Tiedän.ketkä.ovat.opiskelijajärjestöni.opintovastaavat
+qnaire$OpVast[vanhat] <- qnaire$Tiedän..ketkä.ovat.ainejärjestöni.opiskelijajärjestöni.opintovastaavat[vanhat]
+taulu4 <- table(qnaire$OpVast)
+taulu4 <- rbind(taulu4, table(qnaire$Jory))
+
+rownames(taulu4) <- c("Student organisation", "Program's executive group")
+taulu4 <- round(prop.table(taulu4, 1)*100, digits=1)
 
 kable(taulu4, col.names = c("No", "Yes"))
 ```

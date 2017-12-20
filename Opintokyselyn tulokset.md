@@ -170,9 +170,15 @@ Study counselling
 Student representatives
 =============================
 
+- Study representatives *(opintovastaavat)* are known by every three in five students.
+- Students don't know the student representatives of their programs' executive groups *(johtoryhmien opiskelijaedustajat)*.
 
-|       | No| Yes|
-|:------|--:|---:|
-|taulu4 | 61|  56|
-|       | 58| 133|
+***
+
+**Do you know the student representatives of your...?**
+
+|                          |   No|  Yes|
+|:-------------------------|----:|----:|
+|Student organisation      | 38.6| 61.4|
+|Program's executive group | 70.8| 29.2|
 
