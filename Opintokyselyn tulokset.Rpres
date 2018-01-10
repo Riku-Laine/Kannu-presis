@@ -1,7 +1,7 @@
 Results of Kannunvalajat study questionnaire
 ========================================================
 author: Riku Laine
-date: 18.12.2017
+date: 10.1.2018
 autosize: true
 
 <p>
@@ -56,9 +56,27 @@ Contents
 ========================================================
 
 - The data in brief
+
 - Results by theme
-- Summaries
-- Discuss/recommendations
+
+- Some notes
+
+***
+
+<font size="5">
+**Themes:**
+- *Marketing*
+- *Choosing the branch of studies*
+- *Planning and progression of studies*
+- *Courses*
+- *Teaching*
+- *General opinions towards the reform*
+- *Correspondence tables*
+- *Communication of the reform*
+- *Study counselling*
+- *Student representatives*
+
+</font>
 
 ```{r, echo =F}
 qnaire <- read.csv2("~/GitHub/Kannu-presis/opintokysely.csv")
@@ -79,7 +97,7 @@ qnaire$X.1 <- NULL
 The data in brief (1/2)
 ========================================================
 
-- The data is the result of student questionnaire held between XX.XX. and YY.YY. 
+- The data is the result of a student questionnaire held in November.
 - A total of 313 respondents of which
   * 117 study by the current curriculum
   * 193 study by the old curriculum
@@ -105,9 +123,11 @@ The data in brief (2/2)
 ========================================================
 left: 45%
 
-- The questionnaire consisted of 34 or 37 questions dependending the respondents' curricula.
+- The questionnaire consisted of 34 or 37 questions depending on the respondent's curriculum.
 - Most of the questions were answered in the 5-point [Likert scale](https://en.wikipedia.org/wiki/Likert_scale).
-  * Open-ended questions were removed from the given data for privacy reasons.
+  * Open-ended questions were removed
+    + *1 = Strongly disagree*
+    + *5 = Strongly agree*
 
   
 ***
@@ -118,7 +138,7 @@ qnaire$Program[enkku] <- as.character.factor(qnaire$Your.degree.programme.[enkku
 qnaire$Program[vanhat] <- as.character.factor(qnaire$Pääaineesi[vanhat]); qnaire$Pääaineesi <- NULL
 taulu2 <- data.frame(table(qnaire$Program))
 colnames(taulu2) <- c("Program/Subject", "Frequency")
-levels(taulu2$`Program/Subject`)[8] <- "Polvi (kandi)"
+levels(taulu2$`Program/Subject`)[8] <- "Politiikka ja viestintä"
 kable(taulu2[order(taulu2$Frequency, decreasing = T)[1:10],], row.names=F)
 ```
 </font>
@@ -128,8 +148,8 @@ Marketing
 ===========
 left: 40%
 
-- Clarity of name of the new programs has been quite good, mean of answers was $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
-- Communication hasn't been that succesful as one in three respondents (33.3%) claimed they couldn't find info easily.
+- Names of the new programs have been quite descriptive, mean of the answers was $\approx$ `r round(mean(qnaire$Koulutusohjelmani.nimi.on.selkeä, na.rm=T), digits=2)`.
+- Marketing hasn't been that successful as one in three respondents (33.3%) claimed they couldn't find info easily.
 
 
 ***
@@ -138,23 +158,23 @@ left: 40%
 plot1 <- ggplot(data=qnaire,aes(x=Koulutusohjelmani.nimi.on.selkeä)) + geom_bar(na.rm = T) +
 	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
 	coord_flip()+xlim(0.5,5.6)+xlab("")+ylim(0,70)+ylab("")+
-	ggtitle("Clarity of name, n = 117")
+	ggtitle("Name of my program is clear [and descriptive], n = 117")
 
 plot2 <- ggplot(data=qnaire,aes(x=Löysin.helposti.tietoa.uusista.koulutusohjelmista)) + geom_bar(na.rm = T) +
 	geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+
 	coord_flip()+xlab("")+ylim(0,50)+
-	ggtitle("Found info easily about the new programmes (Finnish), n = 117")
+	ggtitle("Found info easily about the new programmes (Finnish students), n = 117")
 
 multiplot(plot1, plot2, cols = 1)
 ```
 
-Choosing the study path
+Choosing the branch of studies
 =========================
-left:40%
+left:45%
 
-- Students are somewhat divided if they are satisfied with choosing their path later *(Mann-Whitney U; p* $\approx$ *0.15)*.
-- Almost one in four (28%) who must choose a path know when to do it
-- The students have also a pretty bad knowledge on what basis are they being chosen as only 36% know.
+- Students are somewhat divided if they are satisfied with choosing their branch at a later stage.
+- Almost one in four (28%) of those who must choose a path don't know when to do it.
+- The criteria for enrollment is also quite unknown.
 
 ***
 
@@ -166,7 +186,7 @@ qnaire <- droplevels(qnaire)
 levels(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään) <- c("No", "Yes", "Doesn't concern me")
 levels(qnaire$Tiedän.millä.perustein.opiskelijat.valitaan.eri.opintosuuntiin) <- c("No", "Yes", "Doesn't concern me")
 
-p1 <- ggplot(data=qnaire,aes(x=Olen.tyytyväinen..että.valitsen.opintosuunnan.vasta.myöhemmässä.vaiheessa.opintoja)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,45)+ggtitle("Satisfied for choosing path later, n = 117")
+p1 <- ggplot(data=qnaire,aes(x=Olen.tyytyväinen..että.valitsen.opintosuunnan.vasta.myöhemmässä.vaiheessa.opintoja)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,45)+ggtitle("Satisfied for choosing branch later, n = 117, mean = 2.85")
 
 p2 <- ggplot(data=qnaire[!is.na(qnaire$Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään),],aes(x=Tiedän.missä.vaiheessa.opintoja.opintosuunnan.valinta.tehdään)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../117*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ylab("")+ggtitle("Know when they choose, n = 117")
 
@@ -176,10 +196,10 @@ multiplot(p1, p2, p3, cols=1)
 ```
 
 
-Planning and the proceeding of studies
+Planning and progress of studies
 ===============================================
 
-- Almost two in five (39%) disagreed or strongly disagreed to the claim their studies had proceeded fluently.
+- Almost two in five (39%) claimed their studies had not proceeded without disturbance.
 - Nearly half of the students have experienced that planning their studies has not been smooth.
 
 ***
@@ -195,7 +215,7 @@ qnaire$My.studies.have.proceeded.without.any.disturbance <-  NULL
 p1 <- ggplot(data=qnaire,aes(x=Opintoni.ovat.edenneet.häiriöttä)) + geom_bar(na.rm = T) + 
 	geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+
 	coord_flip()+xlab("")+ylab("")+ylim(0,110)+
-	ggtitle(paste("Studies have proceeded without disturbance, n = 313, mean = ", round(mean(qnaire$Opintoni.ovat.edenneet.häiriöttä, na.rm=T), digits=2)))
+	ggtitle(paste("Studies have progressed without disturbance, n = 313, mean = ", round(mean(qnaire$Opintoni.ovat.edenneet.häiriöttä, na.rm=T), digits=2)))
 
 qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[vanhat] <- qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa.1[vanhat]
 qnaire$Omien.opintojeni.suunnittelu.on.ollut.sujuvaa[enkku] <- qnaire$Planning.my.studies.has.been.smooth[enkku]
@@ -213,12 +233,12 @@ multiplot(p1, p2, cols=1)
 ```
 
 
-Courses
+Courses - practices
 ======================================
 
-- Almost half think the reform has affected the amount of mandatory presence and supply of alternative ways to take exams. (NB the amount of DK's)
-- Students have pretty much liked methods and contents
-- 60% weren't satisfied with the renewed syllabus (compared to the previous years)
+- Almost half think the reform has affected the amount of mandatory presence and supply of alternative ways to pass courses (essays etc.). *(NB the amount of Don't knows)*
+- Students have pretty much liked methods and contents.
+- 60% weren't satisfied with the new courses and programs (compared to the previous years).
 
 
 ***
@@ -233,7 +253,7 @@ qnaire$AltExamining <- qnaire$Onko.koulutusuudistus.vaikuttanut.vaihtoehtoisten.
 qnaire$Presence <- factor(qnaire$Presence, levels(qnaire$Presence)[c(3,1,2)])
 qnaire$AltExamining <- factor(qnaire$AltExamining, levels(qnaire$AltExamining)[c(3,1,2)])
 
-taulu2 <- data.frame(`Answers in percentages` = c("Mandatory presence", "Alternative examining"))
+taulu2 <- data.frame("Has reform affected" = c("Mandatory presence", "Alternative examining"))
 
 taulu2 <- cbind(taulu2, rbind(prop.table(table(qnaire$Presence)), prop.table(table(qnaire$AltExamining))))
 
@@ -254,19 +274,38 @@ pl1 <- ggplot(qnaire, aes(x=Olen.tyytyväinen.kurssien.asiasisältöön.ja.opetu
 pl2 <- ggplot(qnaire, aes(x=Olen.tyytyväinen.uudistuneeseen.opintotarjontaan))+geom_bar(na.rm = T)+
 	geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+
 	coord_flip()+xlab("")+ylim(0,100)+
-	ggtitle(paste("Satisfied with renewed syllabus, n = 193, mean = ", round(mean(qnaire$Olen.tyytyväinen.uudistuneeseen.opintotarjontaan, na.rm=T), digits = 2)))
+	ggtitle(paste("Satisfied with renewed courses and programs, n = 193, mean = ", round(mean(qnaire$Olen.tyytyväinen.uudistuneeseen.opintotarjontaan, na.rm=T), digits = 2)))
 
 multiplot(pl1, pl2, cols=1)
 ```
+
+Courses - attending
+====================
+
+- One in five couldn't have attended the courses of the new programs that belong to their major studies.
+- Roughly twice larger a portion is not able to participate in their minor subject's courses.
+
+
+****
+
+**I am able to attend the courses that belong to my [...] studies.** (n = 193, in %)
+
+```{r}
+taulu5 <- table(qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.pääaineopintoihini)
+taulu5 <- rbind(taulu5, table(qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.sivuaineopintoihini))
+colnames(taulu5) <- c("No",  "Yes")
+rownames(taulu5) <- c("Major", "Minor")
+taulu5 <- round(prop.table(taulu5, 1)*100, digits=1)
+kable(taulu5)
+```
+
 
 
 Teaching
 ===================================
 
 - New students are quite satisfied with the quality of teaching, more than half agreed or strongly agreed. 
-- I wouldn't say that the students have experinced the reform too badly
-  * Distribution of answers quite symmetrical
-  * Relatively low number of extreme answers
+- Some of the old students feel that the quality of teaching has decreased, though the distribution of answers is quite symmetrical.
 
 ***
 
@@ -290,11 +329,11 @@ General opinions
 ============================================
 
 ```{r}
-p1 <- ggplot(data=qnaire,aes(x=Pidän.koulutusuudistusta.lähtökohtaisesti.hyvänä.asiana)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ggtitle("I regard the reform as a good thing, n = 193")
+p1 <- ggplot(data=qnaire,aes(x=Pidän.koulutusuudistusta.lähtökohtaisesti.hyvänä.asiana)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ggtitle(paste("Fundamentally, I regard the reform as a good thing, n = 193, mean =", round(mean(qnaire$Pidän.koulutusuudistusta.lähtökohtaisesti.hyvänä.asiana, na.rm=T), digits = 2)))
 
-p2 <- ggplot(data=qnaire,aes(x=Oletko.harkinnut.siirtymistä.uuteen.koulutusohjelmaan.)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,100)+ylab("")+ggtitle("Have you thought about changing to a new program, n = 193")
+p2 <- ggplot(data=qnaire,aes(x=Oletko.harkinnut.siirtymistä.uuteen.koulutusohjelmaan.)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,100)+ylab("")+ggtitle(paste("Have you thought about changing to a new program, n = 193, mean = ", round(mean(qnaire$Oletko.harkinnut.siirtymistä.uuteen.koulutusohjelmaan., na.rm=T), digits = 2)))
 
-p3 <- ggplot(data=qnaire,aes(x=Olisin.mielummin.hakenut.uusiin.koulutusohjelmiin.kuin.valinnut.pääaineeni.jo.hakuvaiheessa)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,130)+ggtitle("I had rather applied to the new programs, n = 193")
+p3 <- ggplot(data=qnaire,aes(x=Olisin.mielummin.hakenut.uusiin.koulutusohjelmiin.kuin.valinnut.pääaineeni.jo.hakuvaiheessa)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,130)+ggtitle(paste("I had rather applied to the new programs, n = 193, mean =", round(mean(qnaire$Olisin.mielummin.hakenut.uusiin.koulutusohjelmiin.kuin.valinnut.pääaineeni.jo.hakuvaiheessa, na.rm=T), digits = 2)))
 
 multiplot(p1, p2, p3, cols=1)
 
@@ -302,7 +341,7 @@ multiplot(p1, p2, p3, cols=1)
 
 ***
 
-- The reform is regarded as a good thing
+- The Big Wheel is not well appreciated among students per se.
 - Some students have thought about changing to a new program, but majority want to stick with the old
 - No regret noticeable, almost no one had rather applied to a new program
 
@@ -310,9 +349,11 @@ Correspondence tables (CT)
 ===========================
 
 - Clarity of especially minor subjects' correspondence tables should be improved.
-- Students seem to have hard time finding their minors' correspondence tables.
+- Students seem to have a hard time finding their minors' correspondence tables.
 
 ***
+
+*n = 193*
 
 ```{r}
 taulu3 <- table(qnaire$Näen.selkeästi.pääaineeni.vastaavuustaulukoista.mikä.uusi.kurssi.korvaa.mitäkin.vanhaa.kurssia)
@@ -326,23 +367,56 @@ taulu3 <- round(prop.table(taulu3, 1)*100, digits=1)
 kable(taulu3, col.names = c("No", "Yes"))
 ```
 
-Study counselling
+Communication of the reform
 ====================
 
+- Information concerning the Big Wheel has been hard to find and insufficient.
+  * Over half of the respondents disagreed or strongly disagreed to both of the claims.
 
 ***
 
-```{r, results='hide'}
-qnaire$I.know.where.I.can.get.help.with.issues.regarding.my.studies
-qnaire$Tiedän.mistä.löydän.tietoa.koulutusuudistuksen.etenemisestä.ja.sen.tuomista.muutoksista
-qnaire$Olen.saanut.tarpeeksi.tietoa.miten.koulutusuudistus.vaikuttaa.omiin.opintoihin
-qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa
-qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa.1
-qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa
-qnaire$Koen..että.opintojani.koskeviin.kysymyksiin.on.pystytty.vastaamaan
-qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa.1
-qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.pääaineopintoihini
-qnaire$Pystyn.osallistumaan.uusien.koulutusohjelmien.järjestämille.kursseille..jotka.kuuluvat.sivuaineopintoihini
+```{r}
+
+p1 <- ggplot(data=qnaire,aes(x=Tiedän.mistä.löydän.tietoa.koulutusuudistuksen.etenemisestä.ja.sen.tuomista.muutoksista)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../191*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,70)+ggtitle(paste("I know where to find info concerning the reform, n = 191, mean =", round(mean(qnaire$Tiedän.mistä.löydän.tietoa.koulutusuudistuksen.etenemisestä.ja.sen.tuomista.muutoksista, na.rm=T), digits = 2)))
+
+p2 <- ggplot(data=qnaire,aes(x=Olen.saanut.tarpeeksi.tietoa.miten.koulutusuudistus.vaikuttaa.omiin.opintoihin)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../191*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,90)+ylab("")+ggtitle(paste("I have received sufficient info about the reform's effect, n = 191, mean = ", round(mean(qnaire$Olen.saanut.tarpeeksi.tietoa.miten.koulutusuudistus.vaikuttaa.omiin.opintoihin, na.rm=T), digits = 2)))
+
+multiplot(p1, p2, cols=1)
+
+```
+
+Study counselling
+==================
+
+- There is room for improvement as half of the students think their questions have been left unanswered.
+
+**I have received help in problem situations concerning my studies.**
+
+(n = 310)
+```{r}
+qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa[vanhat] <- qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa.1[vanhat]
+
+taulu6 <- table(qnaire$Olen.saanut.apua.opintojani.koskevissa.ongelmatilanteissa)
+taulu6 <- rbind(taulu6, NULL)
+colnames(taulu6) <- c("No", "Yes", "I haven't had issues")
+rownames(taulu6) <- NULL
+kable(round(prop.table(taulu6, 1)*100, digits=1))
+```
+
+***
+
+```{r}
+qnaire$WhereHelp <- qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa
+qnaire$WhereHelp[vanhat] <- qnaire$Tiedän.mistä.voin.hakea.neuvoa.opintoihin.liittyvissä.kysymyksissä.ja.ongelmatilanteissa.1[vanhat]
+qnaire$WhereHelp[enkku] <- qnaire$I.know.where.I.can.get.help.with.issues.regarding.my.studies[enkku]
+
+
+p1 <- ggplot(data=qnaire,aes(x=WhereHelp)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../313*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,110)+ggtitle(paste("I know where to get help with issues regarding my studies, n = 313, mean =", round(mean(qnaire$WhereHelp, na.rm=T), digits = 2)))
+
+p2 <- ggplot(data=qnaire,aes(x=Koen..että.opintojani.koskeviin.kysymyksiin.on.pystytty.vastaamaan)) + geom_bar(na.rm = T) + geom_text(stat='count',aes(label=paste("(", round(..count../193*100, digits=1), "%)")),hjust=-0.1)+coord_flip()+xlab("")+ylim(0,90)+ylab("")+ggtitle(paste("I feel that my questions have been answered, n = 193, mean = ", round(mean(qnaire$Koen..että.opintojani.koskeviin.kysymyksiin.on.pystytty.vastaamaan, na.rm=T), digits = 2)))
+
+multiplot(p1, p2, cols=1)
+
 ```
 
 
@@ -370,3 +444,13 @@ taulu4 <- round(prop.table(taulu4, 1)*100, digits=1)
 kable(taulu4, col.names = c("No", "Yes"))
 ```
 
+
+Some notes
+===============================
+
+- One big topic reflecting on all the answers is **the lack or unavailability of information**.
+  * Marketing and informing has to be thought in a new way.
+  * Good communication releases student counselling's resources when answers to "easy" questions are readily available.
+- Although there has been "turbulence" in some students' studies, it isn't necessarily caused by the reform.
+  * Economic issues? Mental issues? Health issues?
+  
