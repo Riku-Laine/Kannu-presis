@@ -3,4 +3,6 @@
 This file produces a presentation visible [here](https://riku-laine.github.io/Kannu-presis/index.html#/). The project was done *pro bono*
 during Christmas holiday '17.
 
-* Data available at ???
+* Data available at the repository.
+
+Feel free to modify and improve the slide show.
